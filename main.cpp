@@ -72,6 +72,5 @@ int main() {
 
     cap.release();
     destroyAllWindows();
-
     return 0;
 }
