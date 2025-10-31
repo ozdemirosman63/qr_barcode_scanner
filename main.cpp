@@ -23,7 +23,6 @@ static void append_log(const string& type, const string& data) {
 #endif
     char buf[32];
     strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tm_now);
-
     f << buf << ", " << type << ", " << data << "\n";
 }
 
@@ -48,6 +47,10 @@ int main() {
         vector<Point> bbox;
         string data = qr.detectAndDecode(frame, bbox);
         if (!data.empty()) {
+            polylines(frame, bbox, true, Scalar(0, 255, 0), 2);
+            putText(frame, "QR: " + data, Point(20, 40), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 255, 0), 2);
+            append_log("QR-Code", data);
+        }
             polylines(frame, bbox, true, Scalar(0,255,0), 2);
             putText(frame, "QR: " + data, Point(20,40), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0,255,0), 2);
             append_log("QR-Code", data);
@@ -62,6 +65,7 @@ int main() {
             cout << type << ": " << text << endl;
 
             append_log(type, text);
+            putText(frame, type + ": " + text, Point(20, 80), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 128, 255), 2);
             putText(frame, type + ": " + text, Point(20,80), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0,128,255), 2);
         }
 
@@ -72,5 +76,6 @@ int main() {
 
     cap.release();
     destroyAllWindows();
+    return�0;
     return 0;
 }
