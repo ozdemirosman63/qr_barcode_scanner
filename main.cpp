@@ -51,6 +51,11 @@ int main() {
             putText(frame, "QR: " + data, Point(20, 40), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 255, 0), 2);
             append_log("QR-Code", data);
         }
+            polylines(frame, bbox, true, Scalar(0,255,0), 2);
+            putText(frame, "QR: " + data, Point(20,40), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0,255,0), 2);
+            append_log("QR-Code", data);
+        }
+
         // --- Barcode detection (ZBar) ---
         zbar::Image image(gray.cols, gray.rows, "Y800", gray.data, gray.cols * gray.rows);
         scanner.scan(image);
@@ -61,6 +66,7 @@ int main() {
 
             append_log(type, text);
             putText(frame, type + ": " + text, Point(20, 80), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 128, 255), 2);
+            putText(frame, type + ": " + text, Point(20,80), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0,128,255), 2);
         }
 
         imshow("QR & Barcode Scanner", frame);
@@ -70,5 +76,6 @@ int main() {
 
     cap.release();
     destroyAllWindows();
-    return 0;
+    returnï¿½0;
+    return 0;
 }
