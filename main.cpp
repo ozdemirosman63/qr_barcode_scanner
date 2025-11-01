@@ -11,7 +11,7 @@ using namespace std;
 namespace fs = std::filesystem;
 
 static const string LOG_FILE = "decoded.txt";
-
+   
 // ---------- Yeni: Tekrar logu engellemek için cooldown cache ----------
 struct RecentLogCache {
     int cooldown_frames;
