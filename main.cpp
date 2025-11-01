@@ -62,7 +62,10 @@ static bool find_paper_quad(const Mat& frame, vector<Point2f>& outQuad) {
 }
 
 static vector<Point2f> order_quad_points(const vector<Point2f>& pts) {
-    // TL, TR, BR, BL sýralamasý için klasik yöntem
+
+
+    // TL, TR, BR, BL sÄ±ralamasÄ± iÃ§in klasik yÃ¶ntem
+
     vector<Point2f> rect(4);
     Point2f tl, tr, br, bl;
     float smin=FLT_MAX, smax=-FLT_MAX, dmin=FLT_MAX, dmax=-FLT_MAX;
@@ -105,7 +108,7 @@ static Mat four_point_warp(const Mat& image, const vector<Point2f>& quad) {
 // ---- /helpers ----
 
 int main() {
-    // snapshots klasörünü garanti et
+    // snapshots klasï¿½rï¿½nï¿½ garanti et
     fs::create_directories("snapshots");
 
     VideoCapture cap(0);
@@ -124,7 +127,9 @@ int main() {
 
         // 1) Paper detection + warp
         vector<Point2f> quad;
-        Mat processed = frame; // varsayýlan: orijinal
+
+        Mat processed = frame; // varsayÄ±lan: orijinal
+
         if (find_paper_quad(frame, quad)) {
             processed = four_point_warp(frame, quad);
             putText(processed, "Paper detected - perspective corrected",
@@ -156,16 +161,18 @@ int main() {
             y += 30;
         }
 
+
         // 4) Alt bilgi overlay
         putText(processed, "q: quit  |  s: snapshot  |  logging -> decoded.txt",
                 Point(10, processed.rows - 10),
                 FONT_HERSHEY_SIMPLEX, 0.6, Scalar(240, 240, 240), 2);
 
-        // Göster
+        // Gï¿½ster
         imshow("QR & Barcode Scanner (with perspective correction)", processed);
+
         int key = waitKey(1) & 0xFF;
 
-        // 5) Tuþlar: q = çýkýþ, s = snapshot
+        // 5) Tuï¿½lar: q = ï¿½ï¿½kï¿½ï¿½, s = snapshot
         if (key == 'q') break;
         else if (key == 's') {
             auto now = chrono::system_clock::now();
