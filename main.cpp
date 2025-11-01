@@ -2,10 +2,12 @@
 #include <zbar.h>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include <chrono>
 
 using namespace cv;
 using namespace std;
+namespace fs = std::filesystem;
 
 static const string LOG_FILE = "decoded.txt";
 
@@ -60,7 +62,10 @@ static bool find_paper_quad(const Mat& frame, vector<Point2f>& outQuad) {
 }
 
 static vector<Point2f> order_quad_points(const vector<Point2f>& pts) {
+
+
     // TL, TR, BR, BL sıralaması için klasik yöntem
+
     vector<Point2f> rect(4);
     Point2f tl, tr, br, bl;
     float smin=FLT_MAX, smax=-FLT_MAX, dmin=FLT_MAX, dmax=-FLT_MAX;
@@ -103,6 +108,9 @@ static Mat four_point_warp(const Mat& image, const vector<Point2f>& quad) {
 // ---- /helpers ----
 
 int main() {
+    // snapshots klas�r�n� garanti et
+    fs::create_directories("snapshots");
+
     VideoCapture cap(0);
     if (!cap.isOpened()) {
         cerr << "ERROR: Camera could not be opened." << endl;
@@ -119,7 +127,9 @@ int main() {
 
         // 1) Paper detection + warp
         vector<Point2f> quad;
+
         Mat processed = frame; // varsayılan: orijinal
+
         if (find_paper_quad(frame, quad)) {
             processed = four_point_warp(frame, quad);
             putText(processed, "Paper detected - perspective corrected",
@@ -151,9 +161,34 @@ int main() {
             y += 30;
         }
 
-        imshow("QR & Barcode Scanner", processed);
+
+        // 4) Alt bilgi overlay
+        putText(processed, "q: quit  |  s: snapshot  |  logging -> decoded.txt",
+                Point(10, processed.rows - 10),
+                FONT_HERSHEY_SIMPLEX, 0.6, Scalar(240, 240, 240), 2);
+
+        // G�ster
+        imshow("QR & Barcode Scanner (with perspective correction)", processed);
+
         int key = waitKey(1) & 0xFF;
+
+        // 5) Tu�lar: q = ��k��, s = snapshot
         if (key == 'q') break;
+        else if (key == 's') {
+            auto now = chrono::system_clock::now();
+            time_t t = chrono::system_clock::to_time_t(now);
+            tm tm_now{};
+#ifdef _WIN32
+            localtime_s(&tm_now, &t);
+#else
+            localtime_r(&t, &tm_now);
+#endif
+            char ts[32];
+            strftime(ts, sizeof(ts), "%Y%m%d-%H%M%S", &tm_now);
+            string path = "snapshots/frame_" + string(ts) + ".png";
+            imwrite(path, processed);
+            cout << "Saved snapshot to " << path << endl;
+        }
     }
 
     cap.release();
