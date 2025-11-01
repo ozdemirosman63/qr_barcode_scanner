@@ -17,15 +17,15 @@ static void append_log(const string& type, const string& data) {
 
     auto now = chrono::system_clock::now();
     time_t t = chrono::system_clock::to_time_t(now);
-    tm tm_now{};
+    tm tm_now{};      
 #ifdef _WIN32
-    localtime_s(&tm_now, &t);
+    localtime_s(&tm_now, &t);  
 #else
     localtime_r(&t, &tm_now);
 #endif
     char buf[32];
     strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tm_now);
-
+        
     f << buf << ", " << type << ", " << data << "\n";
 }
 
