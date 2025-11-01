@@ -9,7 +9,7 @@
 using namespace cv;
 using namespace std;
 namespace fs = std::filesystem;
-
+    
 static const string LOG_FILE = "decoded.txt";
    
 // ---------- Yeni: Tekrar logu engellemek için cooldown cache ----------
@@ -23,7 +23,7 @@ struct RecentLogCache {
         for (auto& kv : store) {
             if (--kv.second <= 0) eraseKeys.push_back(kv.first);
         }
-        for (auto& k : eraseKeys) store.erase(k);
+        for (auto& k : eraseKeys) store.erase(k); 
     }
     bool should_log(const string& key) {
         if (store.find(key) != store.end()) return false;
